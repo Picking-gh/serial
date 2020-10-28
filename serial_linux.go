@@ -3,6 +3,7 @@
 package serial
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"time"
@@ -61,6 +62,8 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 			f.Close()
 		}
 	}()
+
+	r := bufio.NewReader(f)
 
 	// Base settings
 	cflagToUse := unix.CREAD | unix.CLOCAL | rate
@@ -125,13 +128,14 @@ func openPort(name string, baud int, databits byte, parity Parity, stopbits Stop
 		return
 	}
 
-	return &Port{f: f}, nil
+	return &Port{f: f, r: r}, nil
 }
 
 type Port struct {
 	// We intentionly do not use an "embedded" struct so that we
 	// don't export File
 	f *os.File
+	r *bufio.Reader
 }
 
 func (p *Port) Read(b []byte) (n int, err error) {
@@ -140,6 +144,10 @@ func (p *Port) Read(b []byte) (n int, err error) {
 
 func (p *Port) Write(b []byte) (n int, err error) {
 	return p.f.Write(b)
+}
+
+func (p *Port) ReadLine() (line []byte, err error) {
+	return p.r.ReadBytes('\n')
 }
 
 // Discards data written to the port but not transmitted,
