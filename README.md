@@ -57,6 +57,11 @@ func main() {
                 log.Fatal(err)
         }
         log.Printf("%q", buf[:n])
+	
+	line, err := s.ReadLine()
+	if errors.Is(err, io.EOF) {
+		log.Fatal(errors.New("serial timedout"))
+	}
 }
 ```
 
