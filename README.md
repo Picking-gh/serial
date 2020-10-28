@@ -64,6 +64,7 @@ func main() {
 	if errors.Is(err, io.EOF) {
 		log.Fatal(errors.New("serial timedout"))
 	}
+	log.Printf("%v", line)
 }
 ```
 
