@@ -34,9 +34,11 @@ Usage
 package main
 
 import (
-        "log"
+	"errors"
+	"log"
+	"io"
 
-        "github.com/tarm/serial"
+        "github.com/Picking-gh/serial"
 )
 
 func main() {
